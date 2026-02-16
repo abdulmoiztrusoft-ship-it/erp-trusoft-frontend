@@ -19,7 +19,7 @@ export default function Breadcrumb() {
               onClick={() => navigate(item.path)}
               className={`transition-colors ${index === breadcrumbs.length - 1
                   ? 'text-[var(--color-primary-darkest)] bg-[var(--color-primary-lightest)] px-1.5 py-[1px] rounded-[2px] text-[14px] leading-none'
-                  : 'text-[#333333] hover:text-gray-900 text-[11px] leading-none'
+                  : 'text-[#333333] hover:text-gray-900 text-[14px] leading-none'
                 }`}
               style={{ fontFamily: 'Poppins' }}
             >
@@ -41,7 +41,7 @@ export default function Breadcrumb() {
       </h1>
 
       {/* Bottom Border Line */}
-      <div className="mt-1 border-b border-[#AFAFAF]"></div>
+      <div className="mt-1 mb-1 border-b border-[#AFAFAF]"></div>
     </div>
   );
 }

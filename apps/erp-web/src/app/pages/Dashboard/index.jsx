@@ -4,27 +4,48 @@ import useDashboardLayout from '../../hooks/useDashboardLayout';
 import SearchBar from './components/SearchBar';
 import FilterButton from './components/FilterButton';
 import Breadcrumb from './components/Breadcrumb';
-import WorkforceOverview from './components/cards/WorkforceOverview';
-import RecruitmentMetrics from './components/cards/RecruitmentMetrics';
-import AttendanceAndLeave from './components/cards/AttendanceAndLeave';
-import TrainingProgress from './components/cards/TrainingProgress';
-import TurnoverRetention from './components/cards/TurnoverRetention';
-import PerformanceSummary from './components/cards/PerformanceSummary';
-import PayrollSummary from './components/cards/PayrollSummary';
 import WidgetsPanel from './components/WidgetsPanel';
+import { getWidgetComponent, hasWidgetComponent } from './utils/widgetComponentMap';
+import { AVAILABLE_WIDGETS } from './constants/widgets';
 
 const GRID_COLS = 12;
 const ROW_HEIGHT = 30;
 const GRID_MARGIN = [16, 16];
 
 // Widget component wrapper
-const GridItem = ({ children, label }) => (
-  <div className="rounded-xl shadow-sm border border-gray-100 overflow-hidden h-full bg-white">
-    <div className="h-full flex flex-col">
-      {children}
+const GridItem = ({ children, label, widgetId, onRemove }) => {
+  const handleRemove = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Removing widget:', widgetId);
+    if (onRemove) {
+      onRemove(widgetId);
+    }
+  };
+
+  return (
+    <div className="rounded-xl shadow-sm border border-gray-100 overflow-visible h-full bg-white flex flex-col relative group">
+      {/* Close Button - on all widgets */}
+      {onRemove && (
+        <button
+          onClick={handleRemove}
+          className="absolute top-2 right-2 z-50 opacity-0 group-hover:opacity-100 transition-opacity bg-white hover:bg-red-50 rounded-lg shadow-sm hover:shadow-md border border-gray-200 cursor-pointer"
+          style={{ width: '32px', height: '32px', padding: '6px', pointerEvents: 'auto' }}
+          title="Remove widget"
+          type="button"
+        >
+          <svg className="w-full h-full text-gray-500 hover:text-red-600 pointer-events-none" fill="currentColor" viewBox="0 0 20 20" style={{ pointerEvents: 'none' }}>
+            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+          </svg>
+        </button>
+      )}
+      {/* Content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {children}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -34,7 +55,8 @@ export default function Dashboard() {
   const {
     layout,
     handleLayoutChange,
-    resetLayout,
+    addItemToLayout,
+    removeItemFromLayout,
     error,
     clearError,
   } = useDashboardLayout();
@@ -43,6 +65,43 @@ export default function Dashboard() {
   const { width, containerRef, mounted } = useContainerWidth();
 
   const gridReady = mounted && width > 0 && layout.length > 0;
+
+  // Handle add widget from panel
+  const handleAddWidget = useCallback((widgetId) => {
+    if (!hasWidgetComponent(widgetId)) {
+      console.error(`No component found for widget: ${widgetId}`);
+      return;
+    }
+
+    const widgetConfig = AVAILABLE_WIDGETS[widgetId];
+    if (!widgetConfig) {
+      console.error(`No configuration found for widget: ${widgetId}`);
+      return;
+    }
+
+    // Create new layout item
+    const newItem = {
+      i: widgetId,
+      ...widgetConfig.defaultLayout,
+    };
+
+    addItemToLayout(newItem);
+    setWidgetsOpen(false);
+  }, [addItemToLayout]);
+
+  // Reset to default layout (restores only the 7 main dashboard widgets)
+  const handleResetLayout = useCallback(() => {
+    const defaultLayout = [
+      { i: 'workforce', x: 0, y: 0, w: 8, h: 3.65, minW: 4, minH: 4 },
+      { i: 'recruitment', x: 8, y: 0, w: 4, h: 3.65, minW: 3, minH: 4 },
+      { i: 'attendance', x: 0, y: 5, w: 4, h: 3, minW: 3, minH: 3 },
+      { i: 'training', x: 4, y: 5, w: 4, h: 3, minW: 3, minH: 3 },
+      { i: 'turnover', x: 8, y: 5, w: 4, h: 3, minW: 3, minH: 3 },
+      { i: 'performance', x: 0, y: 9, w: 4, h: 2.3, minW: 3, minH: 3 },
+      { i: 'payroll', x: 4, y: 9, w: 4, h: 1.9, minW: 3, minH: 3 },
+    ];
+    handleLayoutChange(defaultLayout);
+  }, [handleLayoutChange]);
 
   return (
     <>
@@ -56,7 +115,7 @@ export default function Dashboard() {
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 p-6 pb-5 relative overflow-hidden flex flex-col">
+        <div className="flex-1 p-4 pb-5 relative overflow-hidden flex flex-col">
           <div className="h-full flex flex-col">
             {/* Error Banner */}
             {error && (
@@ -96,7 +155,7 @@ export default function Dashboard() {
                   </button>
                   <button
                     type="button"
-                    onClick={resetLayout}
+                    onClick={handleResetLayout}
                     className="flex items-center gap-[6px] h-[42px] px-[20px] py-[10px] text-sm font-medium text-gray-900 bg-[var(--color-primary-lighter)] rounded-[58px] hover:opacity-90 transition-opacity"
                     title="Reset dashboard to default layout"
                   >
@@ -116,7 +175,7 @@ export default function Dashboard() {
             {/* Grid Container */}
             <div
               ref={containerRef}
-              className="flex-1 overflow-y-auto dashboard-scroll rounded-b-xl"
+              className="flex-1 pr-4 overflow-y-auto dashboard-scroll rounded-b-xl"
               style={{ backgroundColor: 'var(--color-primary-lightest)', paddingBottom: '60px' }}
             >
               {gridReady ? (
@@ -136,47 +195,26 @@ export default function Dashboard() {
                   className="react-grid-layout-container"
                   style={{ padding: '16px' }}
                 >
-                  <div key="workforce">
-                    <GridItem label="Workforce Overview">
-                      <WorkforceOverview />
-                    </GridItem>
-                  </div>
+                  {layout.map((item) => {
+                    const WidgetComponent = getWidgetComponent(item.i);
+                    const widgetConfig = AVAILABLE_WIDGETS[item.i];
 
-                  <div key="recruitment">
-                    <GridItem label="Recruitment Metrics">
-                      <RecruitmentMetrics />
-                    </GridItem>
-                  </div>
+                    if (!WidgetComponent || !widgetConfig) {
+                      return null;
+                    }
 
-                  <div key="attendance">
-                    <GridItem label="Attendance & Leave">
-                      <AttendanceAndLeave />
-                    </GridItem>
-                  </div>
-
-                  <div key="training">
-                    <GridItem label="Training Progress">
-                      <TrainingProgress />
-                    </GridItem>
-                  </div>
-
-                  <div key="turnover">
-                    <GridItem label="Turnover & Retention">
-                      <TurnoverRetention />
-                    </GridItem>
-                  </div>
-
-                  <div key="performance">
-                    <GridItem label="Performance Summary">
-                      <PerformanceSummary />
-                    </GridItem>
-                  </div>
-
-                  <div key="payroll">
-                    <GridItem label="Payroll Summary">
-                      <PayrollSummary />
-                    </GridItem>
-                  </div>
+                    return (
+                      <div key={item.i}>
+                        <GridItem 
+                          label={widgetConfig.title}
+                          widgetId={item.i}
+                          onRemove={removeItemFromLayout}
+                        >
+                          <WidgetComponent />
+                        </GridItem>
+                      </div>
+                    );
+                  })}
                 </ReactGridLayout>
               ) : (
                 <div className="flex items-center justify-center h-full">
@@ -187,7 +225,12 @@ export default function Dashboard() {
           </div>
 
           {/* Slide-in Widgets Panel */}
-          <WidgetsPanel open={widgetsOpen} onClose={() => setWidgetsOpen(false)} />
+          <WidgetsPanel
+            open={widgetsOpen}
+            onClose={() => setWidgetsOpen(false)}
+            currentLayout={layout}
+            onAddWidget={handleAddWidget}
+          />
         </div>
       </div>
     </>

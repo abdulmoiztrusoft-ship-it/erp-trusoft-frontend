@@ -1,17 +1,36 @@
 import { useState } from 'react';
+import { getAvailableWidgetsInfo } from '../constants/widgets';
+import { getWidgetComponent } from '../utils/widgetComponentMap';
 
-export default function WidgetsPanel({ open, onClose }) {
+export default function WidgetsPanel({ open, onClose, currentLayout = [], onAddWidget = null }) {
   const [expanded, setExpanded] = useState({
-    approvals: true,
-    actions: true,
-    create: true,
-    channels: false,
-    favorites: false,
-    quickActionsSection: true,
+    availableWidgets: true,
   });
+
+  const [expandedWidgets, setExpandedWidgets] = useState({});
+  const [searchQuery, setSearchQuery] = useState('');
 
   const toggleSection = (section) => {
     setExpanded((prev) => ({ ...prev, [section]: !prev[section] }));
+  };
+
+  const toggleWidget = (widgetId) => {
+    setExpandedWidgets((prev) => ({ ...prev, [widgetId]: !prev[widgetId] }));
+  };
+
+  // Get available widgets
+  const availableWidgets = getAvailableWidgetsInfo(currentLayout);
+  
+  // Filter widgets based on search query
+  const filteredWidgets = availableWidgets.filter(widget =>
+    widget.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    widget.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleAddWidget = (widgetId) => {
+    if (onAddWidget) {
+      onAddWidget(widgetId);
+    }
   };
 
   return (
@@ -86,7 +105,9 @@ export default function WidgetsPanel({ open, onClose }) {
               </svg>
               <input
                 type="text"
-                placeholder="Search here"
+                placeholder="Search widgets..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="bg-white outline-none flex-1 text-sm border-none"
                 style={{ backgroundColor: 'transparent' }}
               />
@@ -105,565 +126,151 @@ export default function WidgetsPanel({ open, onClose }) {
               padding: '24px 16px',
             }}
           >
-            {/* Quick Actions Section Header */}
-            <button
-              onClick={() => toggleSection('quickActionsSection')}
-              className="w-full flex items-center justify-between mb-2"
-            >
-              <h2
-                style={{
-                  fontFamily: 'Poppins',
-                  fontWeight: 500,
-                  fontSize: '28px',
-                  lineHeight: '100%',
-                  color: '#035F5B',
-                }}
-              >
-                Quick Actions
-              </h2>
-              <svg
-                className={`w-6 h-6 transition-transform duration-300 ${expanded.quickActionsSection ? 'rotate-180' : ''}`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                style={{ color: '#035F5B' }}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-
-            {expanded.quickActionsSection && (
+            {/* Available Widgets Section */}
+            {filteredWidgets.length > 0 && (
               <>
-                {/* Level 3: White Widget Card - My Pending Approvals */}
-                <div
-                  className="rounded-2xl overflow-hidden"
-                  style={{
-                    backgroundColor: '#FFFFFF',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-                    borderRadius: '17px',
-                    width: '483.39px',
-                  }}
+                <button
+                  onClick={() => toggleSection('availableWidgets')}
+                  className="w-full flex items-center justify-between mb-2"
                 >
-                  <button
-                    onClick={() => toggleSection('approvals')}
-                    className="w-full flex items-center justify-between px-5 hover:bg-gray-50 transition-colors"
-                    style={{ paddingTop: '30px', paddingBottom: '16px' }}
+                  <h2
+                    style={{
+                      fontFamily: 'Poppins',
+                      fontWeight: 500,
+                      fontSize: '28px',
+                      lineHeight: '100%',
+                      color: '#035F5B',
+                    }}
                   >
-                    <h3
-                      className="flex items-center gap-2"
-                      style={{
-                        fontFamily: 'Poppins',
-                        fontWeight: 500,
-                        fontSize: '24px',
-                        color: 'var(--color-primary-darkest)',
-                        lineHeight: '100%',
-                      }}
-                    >
-                      <span>👥</span> My Pending Approvals
-                    </h3>
-                    <svg
-                      className={`w-5 h-5 transition-transform duration-300 ${expanded.approvals ? 'rotate-180' : ''}`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      style={{ color: 'var(--color-primary-darkest)' }}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </button>
+                    Available Widgets
+                  </h2>
+                  <svg
+                    className={`w-6 h-6 transition-transform duration-300 ${expanded.availableWidgets ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    style={{ color: '#035F5B' }}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
 
-                  {/* Divider Line */}
-                  <div style={{ height: '1px', backgroundColor: '#E5E7EB', margin: '0 20px' }} />
-
-                  {expanded.approvals && (
-                    <div className="px-5 pb-5">
-                      {/* Leave Request */}
-                      <div className="mb-4">
-                        <h4
-                          style={{
-                            color: 'var(--color-primary-dark)',
-                            fontFamily: 'Poppins',
-                            fontWeight: 600,
-                            fontSize: '20px',
-                            lineHeight: '100%',
-                            marginBottom: '16px',
-                            marginTop: '16px',
-                          }}
-                        >
-                          Leave Request
-                        </h4>
+                {expanded.availableWidgets && (
+                  <div className="space-y-4">
+                    {filteredWidgets.map((widget) => {
+                      const WidgetComponent = getWidgetComponent(widget.id);
+                      const isExpanded = expandedWidgets[widget.id];
+                      return (
                         <div
+                          key={widget.id}
+                          className="rounded-2xl overflow-hidden bg-white"
                           style={{
-                            backgroundColor: 'var(--color-primary-lightest)',
-                            borderRadius: '18px',
-                            border: '1px solid var(--color-primary-lightest)',
-                            width: '437.71px',
-                            height: '78.03px',
-                            opacity: 0.7,
+                            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+                            borderRadius: '17px',
                           }}
-                          className="p-3"
                         >
-                          <div className="flex items-center justify-between gap-2">
-                            <div className="flex-1">
-                              <p
+                          {/* Widget Header */}
+                          <div
+                            className="flex items-center justify-between px-5"
+                            style={{ paddingTop: '20px', paddingBottom: '14px' }}
+                          >
+                            <button
+                              onClick={() => toggleWidget(widget.id)}
+                              className="flex items-center gap-2 flex-1 text-left hover:opacity-80 transition-opacity"
+                            >
+                              <span className="text-xl flex-shrink-0">{widget.icon}</span>
+                              <h3
                                 style={{
                                   fontFamily: 'Poppins',
-                                  fontWeight: 400,
+                                  fontWeight: 500,
                                   fontSize: '18px',
+                                  color: 'var(--color-primary-darkest)',
                                   lineHeight: '100%',
-                                  color: '#000000',
                                 }}
                               >
-                                Ayesha Khan
-                              </p>
-                              <p
-                                style={{
-                                  fontFamily: 'Poppins',
-                                  fontWeight: 400,
-                                  fontSize: '15px',
-                                  lineHeight: '100%',
-                                  color: '#333333',
-                                  marginTop: '4px',
-                                }}
+                                {widget.title}
+                              </h3>
+                            </button>
+                            <div className="flex items-center gap-2 flex-shrink-0">
+                              <button
+                                onClick={() => toggleWidget(widget.id)}
+                                className="p-1 hover:opacity-70 transition-opacity"
                               >
-                                Dec 03–Dec 05
-                              </p>
-                            </div>
-                            <div className="flex gap-2 flex-shrink-0">
-                              <button className="bg-teal-500 text-white px-3 py-1.5 rounded-full text-xs font-medium hover:bg-teal-600 transition-colors">Approve</button>
-                              <button className="bg-red-500 text-white px-3 py-1.5 rounded-full text-xs font-medium hover:bg-red-600 transition-colors">Reject</button>
+                                <svg
+                                  className="w-5 h-5 transition-transform duration-300"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                  style={{
+                                    color: 'var(--color-primary-darkest)',
+                                    transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                                  }}
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M19 9l-7 7-7-7"
+                                  />
+                                </svg>
+                              </button>
+                              <button
+                                onClick={() => handleAddWidget(widget.id)}
+                                className="px-3 py-1.5 bg-[var(--color-primary-medium)] text-white text-xs font-medium rounded-full hover:opacity-90 transition-opacity"
+                              >
+                                Add
+                              </button>
                             </div>
                           </div>
+
+                          {/* Divider */}
+                          <div style={{ height: '1px', backgroundColor: '#E5E7EB', margin: '0 20px' }} />
+
+                          {/* Full Widget Content */}
+                          {isExpanded && WidgetComponent && (
+                            <div className="pt-2 pb-2" style={{ maxHeight: '496px', overflowY: 'auto' }}>
+                              <WidgetComponent />
+                            </div>
+                          )}
                         </div>
-                      </div>
-
-                      {/* Timesheet */}
-                      <div className="mb-4">
-                        <h4
-                          style={{
-                            color: 'var(--color-primary-dark)',
-                            fontFamily: 'Poppins',
-                            fontWeight: 600,
-                            fontSize: '20px',
-                            lineHeight: '100%',
-                            marginBottom: '8px',
-                          }}
-                        >
-                          Timesheet
-                        </h4>
-                        <div
-                          style={{
-                            backgroundColor: 'var(--color-primary-lightest)',
-                            borderRadius: '18px',
-                            border: '1px solid var(--color-primary-lightest)',
-                            width: '437.71px',
-                            height: '78.03px',
-                            opacity: 0.7,
-                          }}
-                          className="p-3"
-                        >
-                          <div className="flex items-center justify-between gap-2">
-                            <div className="flex-1">
-                              <p
-                                style={{
-                                  fontFamily: 'Poppins',
-                                  fontWeight: 400,
-                                  fontSize: '18px',
-                                  lineHeight: '100%',
-                                  color: '#000000',
-                                }}
-                              >
-                                Bilal Ahmed
-                              </p>
-                              <p
-                                style={{
-                                  fontFamily: 'Poppins',
-                                  fontWeight: 400,
-                                  fontSize: '15px',
-                                  lineHeight: '100%',
-                                  color: '#333333',
-                                  marginTop: '4px',
-                                }}
-                              >
-                                Week of Dec 23
-                              </p>
-                            </div>
-                            <div className="flex gap-2 flex-shrink-0">
-                              <button className="bg-teal-500 text-white px-3 py-1.5 rounded-full text-xs font-medium hover:bg-teal-600 transition-colors">Approve</button>
-                              <button className="bg-red-500 text-white px-3 py-1.5 rounded-full text-xs font-medium hover:bg-red-600 transition-colors">Reject</button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Claim */}
-                      <div>
-                        <h4
-                          style={{
-                            color: 'var(--color-primary-dark)',
-                            fontFamily: 'Poppins',
-                            fontWeight: 600,
-                            fontSize: '20px',
-                            lineHeight: '100%',
-                            marginBottom: '8px',
-                          }}
-                        >
-                          Claim
-                        </h4>
-                        <div
-                          style={{
-                            backgroundColor: 'var(--color-primary-lightest)',
-                            borderRadius: '18px',
-                            border: '1px solid var(--color-primary-lightest)',
-                            width: '437.71px',
-                            height: '78.03px',
-                            opacity: 0.7,
-                          }}
-                          className="p-3"
-                        >
-                          <div className="flex items-center justify-between gap-2">
-                            <div className="flex-1">
-                              <p
-                                style={{
-                                  fontFamily: 'Poppins',
-                                  fontWeight: 400,
-                                  fontSize: '18px',
-                                  lineHeight: '100%',
-                                  color: '#000000',
-                                }}
-                              >
-                                Sara Iqbal
-                              </p>
-                              <p
-                                style={{
-                                  fontFamily: 'Poppins',
-                                  fontWeight: 400,
-                                  fontSize: '15px',
-                                  lineHeight: '100%',
-                                  color: '#333333',
-                                  marginTop: '4px',
-                                }}
-                              >
-                                Medical reimbursement
-                              </p>
-                              <p
-                                style={{
-                                  fontFamily: 'Poppins',
-                                  fontWeight: 400,
-                                  fontSize: '15px',
-                                  lineHeight: '100%',
-                                  color: '#333333',
-                                  marginTop: '4px',
-                                }}
-                              >
-                                12,500 PKR
-                              </p>
-                            </div>
-                            <div className="flex gap-2 flex-shrink-0">
-                              <button className="bg-teal-500 text-white px-3 py-1.5 rounded-full text-xs font-medium hover:bg-teal-600 transition-colors">Approve</button>
-                              <button className="bg-red-500 text-white px-3 py-1.5 rounded-full text-xs font-medium hover:bg-red-600 transition-colors">Reject</button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Level 3: White Widget Card - Quick Actions */}
-                <div
-                  className="rounded-2xl overflow-hidden"
-                  style={{
-                    backgroundColor: '#FFFFFF',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-                    borderRadius: '17px',
-                    width: '483.39px',
-                  }}
-                >
-                  <button
-                    onClick={() => toggleSection('actions')}
-                    className="w-full flex items-center justify-between px-5 hover:bg-gray-50 transition-colors"
-                    style={{ paddingTop: '30px', paddingBottom: '16px' }}
-                  >
-                    <h3
-                      className="flex items-center gap-2"
-                      style={{
-                        fontFamily: 'Poppins',
-                        fontWeight: 500,
-                        fontSize: '24px',
-                        color: 'var(--color-primary-darkest)',
-                        lineHeight: '100%',
-                      }}
-                    >
-                      <span>⚡</span> Quick Actions
-                    </h3>
-                    <svg
-                      className={`w-5 h-5 transition-transform duration-300 ${expanded.actions ? 'rotate-180' : ''}`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      style={{ color: 'var(--color-primary-darkest)' }}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </button>
-
-                  {/* Divider Line */}
-                  <div style={{ height: '1px', backgroundColor: '#E5E7EB', margin: '0 20px' }} />
-
-                  {expanded.actions && (
-                    <div className="px-5 pb-5" style={{ marginTop: '16px' }}>
-                      <div className="grid grid-cols-2 gap-3 gap-y-10">
-                        <button
-                          className="flex items-center gap-3 hover:opacity-90 transition-opacity"
-                          style={{
-                            backgroundColor: 'var(--color-primary-lightest)',
-                            borderRadius: '12px',
-                            border: '1px solid var(--color-primary-lightest)',
-                            width: '213.15px',
-                            height: '62.8px',
-                            padding: '12px 16px',
-                            opacity: 0.7,
-                          }}
-                        >
-                          <span className="text-2xl">👤</span>
-                          <span
-                            style={{
-                              fontFamily: 'Poppins',
-                              fontWeight: 400,
-                              fontSize: '16px',
-                              lineHeight: '100%',
-                              color: '#333333',
-                              textAlign: 'left',
-                            }}
-                          >
-                            Add Employee
-                          </span>
-                        </button>
-                        <button
-                          className="flex items-center gap-3 hover:opacity-90 transition-opacity"
-                          style={{
-                            backgroundColor: 'var(--color-primary-lightest)',
-                            borderRadius: '12px',
-                            border: '1px solid var(--color-primary-lightest)',
-                            width: '213.15px',
-                            height: '62.8px',
-                            padding: '12px 16px',
-                            opacity: 0.7,
-                          }}
-                        >
-                          <span className="text-2xl">✓</span>
-                          <span
-                            style={{
-                              fontFamily: 'Poppins',
-                              fontWeight: 400,
-                              fontSize: '16px',
-                              lineHeight: '100%',
-                              color: '#333333',
-                              textAlign: 'left',
-                            }}
-                          >
-                            Approve Leave
-                          </span>
-                        </button>
-                        <button
-                          className="flex items-center gap-3 hover:opacity-90 transition-opacity"
-                          style={{
-                            backgroundColor: 'var(--color-primary-lightest)',
-                            borderRadius: '12px',
-                            border: '1px solid var(--color-primary-lightest)',
-                            width: '213.15px',
-                            height: '62.8px',
-                            padding: '12px 16px',
-                            opacity: 0.7,
-                          }}
-                        >
-                          <span className="text-2xl">📋</span>
-                          <span
-                            style={{
-                              fontFamily: 'Poppins',
-                              fontWeight: 400,
-                              fontSize: '16px',
-                              lineHeight: '100%',
-                              color: '#333333',
-                              textAlign: 'left',
-                            }}
-                          >
-                            Create Requisition
-                          </span>
-                        </button>
-                        <button
-                          className="flex items-center gap-3 hover:opacity-90 transition-opacity"
-                          style={{
-                            backgroundColor: 'var(--color-primary-lightest)',
-                            borderRadius: '12px',
-                            border: '1px solid var(--color-primary-lightest)',
-                            width: '213.15px',
-                            height: '62.8px',
-                            padding: '12px 16px',
-                            opacity: 0.7,
-                          }}
-                        >
-                          <span className="text-2xl">💰</span>
-                          <span
-                            style={{
-                              fontFamily: 'Poppins',
-                              fontWeight: 400,
-                              fontSize: '16px',
-                              lineHeight: '100%',
-                              color: '#333333',
-                              textAlign: 'left',
-                            }}
-                          >
-                            Run Payroll
-                          </span>
-                        </button>
-                        <button
-                          className="flex items-center gap-3 hover:opacity-90 transition-opacity"
-                          style={{
-                            backgroundColor: 'var(--color-primary-lightest)',
-                            borderRadius: '12px',
-                            border: '1px solid var(--color-primary-lightest)',
-                            width: '213.15px',
-                            height: '62.8px',
-                            padding: '12px 16px',
-                            opacity: 0.7,
-                          }}
-                        >
-                          <span className="text-2xl">📅</span>
-                          <span
-                            style={{
-                              fontFamily: 'Poppins',
-                              fontWeight: 400,
-                              fontSize: '16px',
-                              lineHeight: '100%',
-                              color: '#333333',
-                              textAlign: 'left',
-                            }}
-                          >
-                            Schedule Interview
-                          </span>
-                        </button>
-                        <button
-                          className="flex items-center gap-3 hover:opacity-90 transition-opacity"
-                          style={{
-                            backgroundColor: 'var(--color-primary-lightest)',
-                            borderRadius: '12px',
-                            border: '1px solid var(--color-primary-lightest)',
-                            width: '213.15px',
-                            height: '62.8px',
-                            padding: '12px 16px',
-                            opacity: 0.7,
-                          }}
-                        >
-                          <span className="text-2xl">🎯</span>
-                          <span
-                            style={{
-                              fontFamily: 'Poppins',
-                              fontWeight: 400,
-                              fontSize: '16px',
-                              lineHeight: '100%',
-                              color: '#333333',
-                              textAlign: 'left',
-                            }}
-                          >
-                            Create Goal Cycle
-                          </span>
-                        </button>
-                      </div>
-
-                      <button className="w-full text-teal-700 text-sm font-medium hover:opacity-70 mt-3">
-                        More ...
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {/* Level 3: White Widget Card - Quick Create */}
-                <div
-                  className="rounded-2xl overflow-hidden"
-                  style={{
-                    backgroundColor: '#FFFFFF',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-                    borderRadius: '17px',
-                    width: '483.39px',
-                  }}
-                >
-                  <button
-                    onClick={() => toggleSection('create')}
-                    className="w-full flex items-center justify-between px-5 hover:bg-gray-50 transition-colors"
-                    style={{ paddingTop: '30px', paddingBottom: '16px' }}
-                  >
-                    <h3
-                      className="flex items-center gap-2"
-                      style={{
-                        fontFamily: 'Poppins',
-                        fontWeight: 500,
-                        fontSize: '24px',
-                        color: 'var(--color-primary-darkest)',
-                        lineHeight: '100%',
-                      }}
-                    >
-                      <span>✨</span> Quick Create
-                    </h3>
-                    <svg
-                      className={`w-5 h-5 transition-transform duration-300 ${expanded.create ? 'rotate-180' : ''}`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      style={{ color: 'var(--color-primary-darkest)' }}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </button>
-
-                  {/* Divider Line */}
-                  <div style={{ height: '1px', backgroundColor: '#E5E7EB', margin: '0 20px' }} />
-
-                  {expanded.create && (
-                    <div className="px-5 pb-5" style={{ marginTop: '16px' }}>
-                      <div className="space-y-2">
-                        <button className="w-full flex items-center transition-colors p-0" style={{ gap: '12px', paddingTop: '12px', paddingBottom: '12px' }}>
-                          <span className="text-lg flex-shrink-0">📋</span>
-                          <span style={{ fontFamily: 'Poppins', fontWeight: 400, fontSize: '18px', lineHeight: '100%', color: '#333333', textAlign: 'left' }}>New job requisition</span>
-                        </button>
-                        <button className="w-full flex items-center  transition-colors p-0" style={{ gap: '12px', paddingTop: '12px', paddingBottom: '12px' }}>
-                          <span className="text-lg flex-shrink-0">📚</span>
-                          <span style={{ fontFamily: 'Poppins', fontWeight: 400, fontSize: '18px', lineHeight: '100%', color: '#333333', textAlign: 'left' }}>New course</span>
-                        </button>
-                        <button className="w-full flex items-center transition-colors p-0" style={{ gap: '12px', paddingTop: '12px', paddingBottom: '12px', backgroundColor: 'rgba(179, 226, 222, 0.2)', padding: '12px 12px' }}>
-                          <span className="text-lg flex-shrink-0">📄</span>
-                          <span style={{ fontFamily: 'Poppins', fontWeight: 400, fontSize: '18px', lineHeight: '100%', color: '#333333', textAlign: 'left' }}>New policy document</span>
-                        </button>
-                        <button className="w-full flex items-center  transition-colors p-0" style={{ gap: '12px', paddingTop: '12px', paddingBottom: '12px' }}>
-                          <span className="text-lg flex-shrink-0">⏰</span>
-                          <span style={{ fontFamily: 'Poppins', fontWeight: 400, fontSize: '18px', lineHeight: '100%', color: '#333333', textAlign: 'left' }}>New shift rule</span>
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                      );
+                    })}
+                  </div>
+                )}
               </>
+            )}
+
+            {filteredWidgets.length === 0 && searchQuery && (
+              <div className="text-center py-4">
+                <p
+                  style={{
+                    fontFamily: 'Poppins',
+                    color: '#666666',
+                    fontSize: '14px',
+                  }}
+                >
+                  No widgets found matching "{searchQuery}"
+                </p>
+              </div>
+            )}
+
+            {filteredWidgets.length === 0 && !searchQuery && (
+              <div className="text-center py-4">
+                <p
+                  style={{
+                    fontFamily: 'Poppins',
+                    color: '#666666',
+                    fontSize: '14px',
+                  }}
+                >
+                  All available widgets are already added to your dashboard!
+                </p>
+              </div>
             )}
 
             {/* Extra padding at bottom to allow scrolling past the floating button */}

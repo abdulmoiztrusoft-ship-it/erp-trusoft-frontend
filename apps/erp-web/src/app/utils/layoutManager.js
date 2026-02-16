@@ -1,5 +1,5 @@
 export const GRID_CONFIG = {
-  COLS: 6,
+  COLS: 12,
   ROW_HEIGHT: 30,
   MARGIN: [16, 16],
   STORAGE_KEY: 'dashboard-grid-layout',
@@ -88,7 +88,7 @@ export const getDefaultLayout = () => [
   { i: 'attendance', x: 0, y: 5, w: 4, h: 3, minW: 3, minH: 3 },
   { i: 'training', x: 4, y: 5, w: 4, h: 3, minW: 3, minH: 3 },
   { i: 'turnover', x: 8, y: 5, w: 4, h: 3, minW: 3, minH: 3 },
-  { i: 'performance', x: 0, y: 9, w: 4, h: 2.7, minW: 3, minH: 3 },
+  { i: 'performance', x: 0, y: 9, w: 4, h: 2.3, minW: 3, minH: 3 },
   { i: 'payroll', x: 4, y: 9, w: 4, h: 1.9, minW: 3, minH: 3 },
 ];
 
