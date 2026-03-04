@@ -1,5 +1,10 @@
 import React, { forwardRef } from 'react';
 
+
+//  Select Component
+// A reusable select/dropdown component with support for variants, labels, errors, and custom styling
+ 
+
 const DropdownIcon = ({ disabled }) => (
   <svg
     width="10"

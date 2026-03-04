@@ -1,22 +1,22 @@
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useRef } from 'react';
 
 
-const copyVariants = {
+const dateVariants = {
   inactive: {
     background: 'bg-[#B4E2DF66]',
     border: 'border-[#045F5866]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
   active: {
     background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
+    border: 'border-[var(--color-teal-10)]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
   error: {
     background: 'bg-[#FFF5F580]',
@@ -31,8 +31,8 @@ const copyVariants = {
     border: 'border-[#33333366]',
     text: 'text-gray-500',
     placeholder: 'placeholder-gray-400',
-    focusRing: 'focus:ring-[#333333]',
-    focusBorder: 'focus:border-[#333333]',
+    focusRing: 'focus:ring-[var(--color-neutral-8)]',
+    focusBorder: 'focus:border-[var(--color-neutral-8)]',
   },
   readonly: {
     background: 'bg-[#B4E2DF99]',
@@ -41,14 +41,6 @@ const copyVariants = {
     placeholder: 'placeholder-gray-600',
     focusRing: 'focus:ring-[#A3A9A9]',
     focusBorder: 'focus:border-[#A3A9A9]',
-  },
-  copied: {
-    background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
-    text: 'text-gray-800',
-    placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
   },
   'error-text': {
     background: 'bg-[#FFF5F580]',
@@ -60,70 +52,53 @@ const copyVariants = {
   },
   helper: {
     background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
+    border: 'border-[var(--color-teal-10)]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
   required: {
     background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
+    border: 'border-[var(--color-teal-10)]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
   linear: {
     background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
+    border: 'border-[var(--color-teal-10)]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
 };
 
-// Copy icon SVG component
-const CopyIcon = ({ disabled }) => (
+// Calendar icon SVG component
+const CalendarIcon = ({ disabled }) => (
   <svg
     width="10"
-    height="10"
-    viewBox="0 0 16 16"
+    height="11.25"
+    viewBox="0 0 12 13"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     style={{
       opacity: disabled ? 0.5 : 1,
     }}
   >
-    <rect
-      x="0"
-      y="0"
-      width="16"
-      height="16"
-      rx="2"
-      fill={disabled ? '#999999' : '#333333'}
-    />
     <path
-      d="M4 2.5H1.5V14H9.5V11.5M4 2.5V6.5H9.5V14M4 2.5H9.5"
-      stroke="white"
-      strokeWidth="1"
+      d="M3.125 9.51261V9.46427M5.9375 9.51261V9.46427M5.9375 6.89285V6.84451M8.4375 6.89285V6.84451M1.25 4.32141H10M2.38095 0.625V1.5894M8.75 0.625V1.58928M8.75 1.58928H2.5C1.46447 1.58928 0.625 2.45273 0.625 3.51784V9.94644C0.625 11.0116 1.46447 11.875 2.5 11.875H8.75C9.78553 11.875 10.625 11.0116 10.625 9.94644L10.625 3.51784C10.625 2.45273 9.78553 1.58928 8.75 1.58928Z"
+      stroke={disabled ? '#999999' : '#000000'}
+      strokeWidth="1.25"
       strokeLinecap="round"
       strokeLinejoin="round"
-      fill="none"
-    />
-    <path
-      d="M5.5 6.5H12V13.5H5.5V6.5Z"
-      stroke="white"
-      strokeWidth="1"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      fill="none"
     />
   </svg>
 );
 
-const CopyInput = forwardRef(
+const DateInput = forwardRef(
   (
     {
       label,
@@ -145,35 +120,24 @@ const CopyInput = forwardRef(
       errorClassName = '',
       helpTextClassName = '',
       style = {},
-      onCopy,
       ...rest
     },
     ref
   ) => {
-    const [isCopied, setIsCopied] = useState(false);
+    const internalRef = useRef(null);
+    const inputRef = ref || internalRef;
 
-    const variantStyles = copyVariants[variant] || copyVariants.inactive;
+    const variantStyles = dateVariants[variant] || dateVariants.inactive;
 
     // Determine actual variant to use based on state
     const getActiveVariant = () => {
-      if (disabled) return copyVariants.disabled;
-      if (readOnly) return copyVariants.readonly;
-      if (isCopied) return copyVariants.copied;
-      if (error) return copyVariants.error;
+      if (disabled) return dateVariants.disabled;
+      if (readOnly) return dateVariants.readonly;
+      if (error) return dateVariants.error;
       return variantStyles;
     };
 
     const activeVariant = getActiveVariant();
-
-    const handleCopy = () => {
-      if (value) {
-        navigator.clipboard.writeText(value).then(() => {
-          setIsCopied(true);
-          setTimeout(() => setIsCopied(false), 2000);
-          onCopy?.();
-        });
-      }
-    };
 
     return (
       <div className={`flex flex-col gap-2 ${containerClassName}`}>
@@ -189,10 +153,10 @@ const CopyInput = forwardRef(
         )}
         <div className="relative inline-block">
           <input
-            ref={ref}
+            ref={inputRef}
             id={name}
             name={name}
-            type="text"
+            type="date"
             value={value}
             onChange={onChange}
             onBlur={onBlur}
@@ -223,28 +187,29 @@ const CopyInput = forwardRef(
               ${disabled ? 'cursor-not-allowed opacity-60' : ''}
               ${readOnly ? 'cursor-default' : ''}
               ${className}
+              [&::-webkit-calendar-picker-indicator]:hidden
             `}
             {...rest}
           />
           <button
             type="button"
-            onClick={handleCopy}
-            disabled={disabled || readOnly || !value}
+            onClick={() => inputRef.current?.showPicker?.()}
+            disabled={disabled || readOnly}
             style={{
               position: 'absolute',
-              top: '17.07px',
-              left: '338.41px',
+              top: '12px',
+              left: '333px',
               background: 'none',
               border: 'none',
               padding: '0',
-              cursor: disabled || readOnly || !value ? 'not-allowed' : 'pointer',
+              cursor: disabled || readOnly ? 'not-allowed' : 'pointer',
               opacity: disabled || readOnly ? 0.5 : 1,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <CopyIcon disabled={disabled || readOnly} />
+            <CalendarIcon disabled={disabled || readOnly} />
           </button>
         </div>
         {error && (
@@ -258,6 +223,6 @@ const CopyInput = forwardRef(
   }
 );
 
-CopyInput.displayName = 'CopyInput';
+DateInput.displayName = 'DateInput';
 
-export default CopyInput;
+export default DateInput;

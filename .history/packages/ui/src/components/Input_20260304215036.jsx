@@ -1,22 +1,22 @@
 import React, { forwardRef } from 'react';
 
-const DropdownIcon = ({ disabled }) => (
-  <svg
-    width="10"
-    height="7"
-    viewBox="0 0 10 7"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    style={{ transform: 'rotate(180deg)' }}
-  >
-    <polygon
-      points="0,7 5,0 10,7"
-      fill={disabled ? '#999999' : '#000000'}
-    />
-  </svg>
-);
+/**
+ * Input Component
+ * A reusable text input component with variants and error states
+ * 
+ * Variants:
+ * - inactive: Background #B4E2DF66, Border #045F5866
+ * - active: Background #B4E2DF66, Border #045F58
+ * - error: Error state styling
+ * - disabled: Disabled state styling
+ * - readonly: Readonly state styling
+ * - error-text: Error state with text
+ * - helper: Helper text styling
+ * - required: Required field styling
+ * - linear: Linear input styling
+ */
 
-const selectVariants = {
+const inputVariants = {
   inactive: {
     background: 'bg-[#B4E2DF66]',
     border: 'border-[#045F5866]',
@@ -26,14 +26,6 @@ const selectVariants = {
     focusBorder: 'focus:border-[#045F58]',
   },
   active: {
-    background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
-    text: 'text-gray-800',
-    placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
-  },
-  focus: {
     background: 'bg-[#B4E2DF66]',
     border: 'border-[#045F58]',
     text: 'text-gray-800',
@@ -65,15 +57,7 @@ const selectVariants = {
     focusRing: 'focus:ring-[#A3A9A9]',
     focusBorder: 'focus:border-[#A3A9A9]',
   },
-  variant7: {
-    background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
-    text: 'text-gray-800',
-    placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
-  },
-  variant8: {
+  'error-text': {
     background: 'bg-[#FFF5F580]',
     border: 'border-[#DD3838]',
     text: 'text-gray-800',
@@ -81,7 +65,7 @@ const selectVariants = {
     focusRing: 'focus:ring-[#DD3838]',
     focusBorder: 'focus:border-[#DD3838]',
   },
-  variant9: {
+  helper: {
     background: 'bg-[#B4E2DF66]',
     border: 'border-[#045F58]',
     text: 'text-gray-800',
@@ -89,7 +73,15 @@ const selectVariants = {
     focusRing: 'focus:ring-[#045F58]',
     focusBorder: 'focus:border-[#045F58]',
   },
-  variant10: {
+  required: {
+    background: 'bg-[#B4E2DF66]',
+    border: 'border-[#045F58]',
+    text: 'text-gray-800',
+    placeholder: 'placeholder-gray-600',
+    focusRing: 'focus:ring-[#045F58]',
+    focusBorder: 'focus:border-[#045F58]',
+  },
+  linear: {
     background: 'bg-[#B4E2DF66]',
     border: 'border-[#045F58]',
     text: 'text-gray-800',
@@ -99,7 +91,7 @@ const selectVariants = {
   },
 };
 
-const Select = forwardRef(
+const Input = forwardRef(
   (
     {
       label,
@@ -109,13 +101,13 @@ const Select = forwardRef(
       onBlur,
       onFocus,
       placeholder,
-      options = [],
       disabled = false,
       readOnly = false,
       error,
       helpText,
       variant = 'inactive',
       required = false,
+      type = 'text',
       className = '',
       containerClassName = '',
       labelClassName = '',
@@ -126,13 +118,13 @@ const Select = forwardRef(
     },
     ref
   ) => {
-    const variantStyles = selectVariants[variant] || selectVariants.inactive;
+    const variantStyles = inputVariants[variant] || inputVariants.inactive;
 
     // Determine actual variant to use based on state
     const getActiveVariant = () => {
-      if (disabled) return selectVariants.disabled;
-      if (readOnly) return selectVariants.readonly;
-      if (error) return selectVariants.error;
+      if (disabled) return inputVariants.disabled;
+      if (readOnly) return inputVariants.readonly;
+      if (error) return inputVariants.error;
       return variantStyles;
     };
 
@@ -150,62 +142,46 @@ const Select = forwardRef(
             {label}
           </label>
         )}
-        <div className="relative inline-block">
-          <select
-            ref={ref}
-            id={name}
-            name={name}
-            value={value}
-            onChange={onChange}
-            onBlur={onBlur}
-            onFocus={onFocus}
-            disabled={disabled}
-            style={{
-              width: '359px',
-              height: '40px',
-              borderRadius: '6px',
-              appearance: 'none',
-              paddingRight: '40px',
-              paddingLeft: '12px',
-              backgroundImage: 'none',
-              ...style,
-            }}
-            className={`
-              py-2
-              border border-[1px]
-              text-sm
-              font-normal
-              transition-all duration-200
-              focus:outline-none focus:ring-2
-              ${activeVariant.background}
-              ${activeVariant.border}
-              ${activeVariant.text}
-              resize-none
-              ${disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}
-              ${readOnly ? 'cursor-default' : ''}
-              ${className}
-            `}
-            {...rest}
-          >
-            {placeholder && (
-              <option value="" disabled>
-                {placeholder}
-              </option>
-            )}
-            {options.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-
-          {/* Dropdown Icon - Polygon from Figma */}
-          <div className="absolute top-[16.98px] left-[334.5px] pointer-events-none w-[10px] h-[7px]">
-            <DropdownIcon disabled={disabled} />
-          </div>
-        </div>
-
-        {error && <p className={`text-xs text-red-600 ${errorClassName}`}>{error}</p>}
+        <input
+          ref={ref}
+          id={name}
+          name={name}
+          type={type}
+          value={value}
+          onChange={onChange}
+          onBlur={onBlur}
+          onFocus={onFocus}
+          placeholder={placeholder}
+          disabled={disabled}
+          readOnly={readOnly}
+          style={{
+            width: '360px',
+            height: '40px',
+            borderRadius: '6px',
+            ...style,
+          }}
+          className={`
+            px-3 py-2 
+            border border-[1px]
+            text-sm
+            font-normal
+            transition-all duration-200
+            focus:outline-none focus:ring-2
+            ${activeVariant.background}
+            ${activeVariant.border}
+            ${activeVariant.text}
+            ${activeVariant.placeholder}
+            ${activeVariant.focusRing}
+            ${activeVariant.focusBorder}
+            ${disabled ? 'cursor-not-allowed opacity-60' : ''}
+            ${readOnly ? 'cursor-default' : ''}
+            ${className}
+          `}
+          {...rest}
+        />
+        {error && (
+          <p className={`text-xs text-red-600 ${errorClassName}`}>{error}</p>
+        )}
         {helpText && !error && (
           <p className={`text-xs text-gray-600 ${helpTextClassName}`}>{helpText}</p>
         )}
@@ -214,6 +190,6 @@ const Select = forwardRef(
   }
 );
 
-Select.displayName = 'Select';
+Input.displayName = 'Input';
 
-export default Select;
+export default Input;

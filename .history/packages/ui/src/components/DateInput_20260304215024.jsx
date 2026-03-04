@@ -1,22 +1,22 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useRef } from 'react';
 
-const DropdownIcon = ({ disabled }) => (
-  <svg
-    width="10"
-    height="7"
-    viewBox="0 0 10 7"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    style={{ transform: 'rotate(180deg)' }}
-  >
-    <polygon
-      points="0,7 5,0 10,7"
-      fill={disabled ? '#999999' : '#000000'}
-    />
-  </svg>
-);
+/**
+ * DateInput Component
+ * A reusable date input component with calendar icon, variants, and error states
+ * 
+ * Variants:
+ * - inactive: Background #B4E2DF66, Border #045F5866
+ * - active: Background #B4E2DF66, Border #045F58
+ * - error: Error state styling
+ * - disabled: Disabled state styling
+ * - readonly: Readonly state styling
+ * - error-text: Error state with text
+ * - helper: Helper text styling
+ * - required: Required field styling
+ * - linear: Linear input styling
+ */
 
-const selectVariants = {
+const dateVariants = {
   inactive: {
     background: 'bg-[#B4E2DF66]',
     border: 'border-[#045F5866]',
@@ -26,14 +26,6 @@ const selectVariants = {
     focusBorder: 'focus:border-[#045F58]',
   },
   active: {
-    background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
-    text: 'text-gray-800',
-    placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
-  },
-  focus: {
     background: 'bg-[#B4E2DF66]',
     border: 'border-[#045F58]',
     text: 'text-gray-800',
@@ -65,15 +57,7 @@ const selectVariants = {
     focusRing: 'focus:ring-[#A3A9A9]',
     focusBorder: 'focus:border-[#A3A9A9]',
   },
-  variant7: {
-    background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
-    text: 'text-gray-800',
-    placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
-  },
-  variant8: {
+  'error-text': {
     background: 'bg-[#FFF5F580]',
     border: 'border-[#DD3838]',
     text: 'text-gray-800',
@@ -81,7 +65,7 @@ const selectVariants = {
     focusRing: 'focus:ring-[#DD3838]',
     focusBorder: 'focus:border-[#DD3838]',
   },
-  variant9: {
+  helper: {
     background: 'bg-[#B4E2DF66]',
     border: 'border-[#045F58]',
     text: 'text-gray-800',
@@ -89,7 +73,15 @@ const selectVariants = {
     focusRing: 'focus:ring-[#045F58]',
     focusBorder: 'focus:border-[#045F58]',
   },
-  variant10: {
+  required: {
+    background: 'bg-[#B4E2DF66]',
+    border: 'border-[#045F58]',
+    text: 'text-gray-800',
+    placeholder: 'placeholder-gray-600',
+    focusRing: 'focus:ring-[#045F58]',
+    focusBorder: 'focus:border-[#045F58]',
+  },
+  linear: {
     background: 'bg-[#B4E2DF66]',
     border: 'border-[#045F58]',
     text: 'text-gray-800',
@@ -99,7 +91,29 @@ const selectVariants = {
   },
 };
 
-const Select = forwardRef(
+// Calendar icon SVG component
+const CalendarIcon = ({ disabled }) => (
+  <svg
+    width="10"
+    height="11.25"
+    viewBox="0 0 12 13"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    style={{
+      opacity: disabled ? 0.5 : 1,
+    }}
+  >
+    <path
+      d="M3.125 9.51261V9.46427M5.9375 9.51261V9.46427M5.9375 6.89285V6.84451M8.4375 6.89285V6.84451M1.25 4.32141H10M2.38095 0.625V1.5894M8.75 0.625V1.58928M8.75 1.58928H2.5C1.46447 1.58928 0.625 2.45273 0.625 3.51784V9.94644C0.625 11.0116 1.46447 11.875 2.5 11.875H8.75C9.78553 11.875 10.625 11.0116 10.625 9.94644L10.625 3.51784C10.625 2.45273 9.78553 1.58928 8.75 1.58928Z"
+      stroke={disabled ? '#999999' : '#000000'}
+      strokeWidth="1.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const DateInput = forwardRef(
   (
     {
       label,
@@ -109,7 +123,6 @@ const Select = forwardRef(
       onBlur,
       onFocus,
       placeholder,
-      options = [],
       disabled = false,
       readOnly = false,
       error,
@@ -126,13 +139,16 @@ const Select = forwardRef(
     },
     ref
   ) => {
-    const variantStyles = selectVariants[variant] || selectVariants.inactive;
+    const internalRef = useRef(null);
+    const inputRef = ref || internalRef;
+
+    const variantStyles = dateVariants[variant] || dateVariants.inactive;
 
     // Determine actual variant to use based on state
     const getActiveVariant = () => {
-      if (disabled) return selectVariants.disabled;
-      if (readOnly) return selectVariants.readonly;
-      if (error) return selectVariants.error;
+      if (disabled) return dateVariants.disabled;
+      if (readOnly) return dateVariants.readonly;
+      if (error) return dateVariants.error;
       return variantStyles;
     };
 
@@ -151,27 +167,27 @@ const Select = forwardRef(
           </label>
         )}
         <div className="relative inline-block">
-          <select
-            ref={ref}
+          <input
+            ref={inputRef}
             id={name}
             name={name}
+            type="date"
             value={value}
             onChange={onChange}
             onBlur={onBlur}
             onFocus={onFocus}
+            placeholder={placeholder}
             disabled={disabled}
+            readOnly={readOnly}
             style={{
-              width: '359px',
+              width: '360px',
               height: '40px',
               borderRadius: '6px',
-              appearance: 'none',
-              paddingRight: '40px',
-              paddingLeft: '12px',
-              backgroundImage: 'none',
+              paddingRight: '50px',
               ...style,
             }}
             className={`
-              py-2
+              px-3 py-2 
               border border-[1px]
               text-sm
               font-normal
@@ -180,32 +196,40 @@ const Select = forwardRef(
               ${activeVariant.background}
               ${activeVariant.border}
               ${activeVariant.text}
-              resize-none
-              ${disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}
+              ${activeVariant.placeholder}
+              ${activeVariant.focusRing}
+              ${activeVariant.focusBorder}
+              ${disabled ? 'cursor-not-allowed opacity-60' : ''}
               ${readOnly ? 'cursor-default' : ''}
               ${className}
+              [&::-webkit-calendar-picker-indicator]:hidden
             `}
             {...rest}
+          />
+          <button
+            type="button"
+            onClick={() => inputRef.current?.showPicker?.()}
+            disabled={disabled || readOnly}
+            style={{
+              position: 'absolute',
+              top: '12px',
+              left: '333px',
+              background: 'none',
+              border: 'none',
+              padding: '0',
+              cursor: disabled || readOnly ? 'not-allowed' : 'pointer',
+              opacity: disabled || readOnly ? 0.5 : 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
           >
-            {placeholder && (
-              <option value="" disabled>
-                {placeholder}
-              </option>
-            )}
-            {options.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-
-          {/* Dropdown Icon - Polygon from Figma */}
-          <div className="absolute top-[16.98px] left-[334.5px] pointer-events-none w-[10px] h-[7px]">
-            <DropdownIcon disabled={disabled} />
-          </div>
+            <CalendarIcon disabled={disabled || readOnly} />
+          </button>
         </div>
-
-        {error && <p className={`text-xs text-red-600 ${errorClassName}`}>{error}</p>}
+        {error && (
+          <p className={`text-xs text-red-600 ${errorClassName}`}>{error}</p>
+        )}
         {helpText && !error && (
           <p className={`text-xs text-gray-600 ${helpTextClassName}`}>{helpText}</p>
         )}
@@ -214,6 +238,6 @@ const Select = forwardRef(
   }
 );
 
-Select.displayName = 'Select';
+DateInput.displayName = 'DateInput';
 
-export default Select;
+export default DateInput;

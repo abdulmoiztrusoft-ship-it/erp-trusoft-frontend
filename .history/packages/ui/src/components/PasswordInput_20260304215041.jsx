@@ -1,22 +1,23 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState } from 'react';
 
-const DropdownIcon = ({ disabled }) => (
-  <svg
-    width="10"
-    height="7"
-    viewBox="0 0 10 7"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    style={{ transform: 'rotate(180deg)' }}
-  >
-    <polygon
-      points="0,7 5,0 10,7"
-      fill={disabled ? '#999999' : '#000000'}
-    />
-  </svg>
-);
+/**
+ * PasswordInput Component
+ * A reusable password input component with show/hide toggle, variants, and error states
+ * 
+ * Variants:
+ * - inactive: Background #B4E2DF66, Border #045F5866
+ * - active: Background #B4E2DF66, Border #045F5866
+ * - active-show: Active with show password enabled
+ * - disabled: Disabled state styling
+ * - readonly: Readonly state styling
+ * - error: Error state styling
+ * - error-text: Error state with text
+ * - helper: Helper text styling
+ * - required: Required field styling
+ * - linear: Linear input styling with action button
+ */
 
-const selectVariants = {
+const passwordVariants = {
   inactive: {
     background: 'bg-[#B4E2DF66]',
     border: 'border-[#045F5866]',
@@ -27,27 +28,19 @@ const selectVariants = {
   },
   active: {
     background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
+    border: 'border-[#045F5866]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
     focusRing: 'focus:ring-[#045F58]',
     focusBorder: 'focus:border-[#045F58]',
   },
-  focus: {
+  'active-show': {
     background: 'bg-[#B4E2DF66]',
     border: 'border-[#045F58]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
     focusRing: 'focus:ring-[#045F58]',
     focusBorder: 'focus:border-[#045F58]',
-  },
-  error: {
-    background: 'bg-[#FFF5F580]',
-    border: 'border-[#DD3838]',
-    text: 'text-gray-800',
-    placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#DD3838]',
-    focusBorder: 'focus:border-[#DD3838]',
   },
   disabled: {
     background: 'bg-[#D2EEEC66]',
@@ -65,15 +58,7 @@ const selectVariants = {
     focusRing: 'focus:ring-[#A3A9A9]',
     focusBorder: 'focus:border-[#A3A9A9]',
   },
-  variant7: {
-    background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
-    text: 'text-gray-800',
-    placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
-  },
-  variant8: {
+  error: {
     background: 'bg-[#FFF5F580]',
     border: 'border-[#DD3838]',
     text: 'text-gray-800',
@@ -81,7 +66,15 @@ const selectVariants = {
     focusRing: 'focus:ring-[#DD3838]',
     focusBorder: 'focus:border-[#DD3838]',
   },
-  variant9: {
+  'error-text': {
+    background: 'bg-[#FFF5F580]',
+    border: 'border-[#DD3838]',
+    text: 'text-gray-800',
+    placeholder: 'placeholder-gray-600',
+    focusRing: 'focus:ring-[#DD3838]',
+    focusBorder: 'focus:border-[#DD3838]',
+  },
+  helper: {
     background: 'bg-[#B4E2DF66]',
     border: 'border-[#045F58]',
     text: 'text-gray-800',
@@ -89,7 +82,15 @@ const selectVariants = {
     focusRing: 'focus:ring-[#045F58]',
     focusBorder: 'focus:border-[#045F58]',
   },
-  variant10: {
+  required: {
+    background: 'bg-[#B4E2DF66]',
+    border: 'border-[#045F58]',
+    text: 'text-gray-800',
+    placeholder: 'placeholder-gray-600',
+    focusRing: 'focus:ring-[#045F58]',
+    focusBorder: 'focus:border-[#045F58]',
+  },
+  linear: {
     background: 'bg-[#B4E2DF66]',
     border: 'border-[#045F58]',
     text: 'text-gray-800',
@@ -99,7 +100,26 @@ const selectVariants = {
   },
 };
 
-const Select = forwardRef(
+// Eye icon SVG component
+const EyeIcon = ({ showPassword, disabled }) => (
+  <svg
+    width="20"
+    height="11.95"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    style={{
+      opacity: disabled ? 0.5 : 1,
+    }}
+  >
+    <path
+      d="M12 5C7 5 2.73 8.11 1 12.5c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5C21.27 8.11 17 5 12 5zm0 12c-2.48 0-4.5-2.02-4.5-4.5S9.52 8 12 8s4.5 2.02 4.5 4.5S14.48 17 12 17zm0-7c-1.38 0-2.5 1.12-2.5 2.5S10.62 15 12 15s2.5-1.12 2.5-2.5S13.38 10 12 10z"
+      fill={disabled ? '#999999' : '#333333'}
+    />
+  </svg>
+);
+
+const PasswordInput = forwardRef(
   (
     {
       label,
@@ -109,7 +129,6 @@ const Select = forwardRef(
       onBlur,
       onFocus,
       placeholder,
-      options = [],
       disabled = false,
       readOnly = false,
       error,
@@ -122,17 +141,20 @@ const Select = forwardRef(
       errorClassName = '',
       helpTextClassName = '',
       style = {},
+      onActionClick,
       ...rest
     },
     ref
   ) => {
-    const variantStyles = selectVariants[variant] || selectVariants.inactive;
+    const [showPassword, setShowPassword] = useState(false);
+
+    const variantStyles = passwordVariants[variant] || passwordVariants.inactive;
 
     // Determine actual variant to use based on state
     const getActiveVariant = () => {
-      if (disabled) return selectVariants.disabled;
-      if (readOnly) return selectVariants.readonly;
-      if (error) return selectVariants.error;
+      if (disabled) return passwordVariants.disabled;
+      if (readOnly) return passwordVariants.readonly;
+      if (error) return passwordVariants.error;
       return variantStyles;
     };
 
@@ -151,27 +173,27 @@ const Select = forwardRef(
           </label>
         )}
         <div className="relative inline-block">
-          <select
+          <input
             ref={ref}
             id={name}
             name={name}
+            type={showPassword ? 'text' : 'password'}
             value={value}
             onChange={onChange}
             onBlur={onBlur}
             onFocus={onFocus}
+            placeholder={placeholder}
             disabled={disabled}
+            readOnly={readOnly}
             style={{
               width: '359px',
               height: '40px',
               borderRadius: '6px',
-              appearance: 'none',
               paddingRight: '40px',
-              paddingLeft: '12px',
-              backgroundImage: 'none',
               ...style,
             }}
             className={`
-              py-2
+              px-3 py-2 
               border border-[1px]
               text-sm
               font-normal
@@ -180,32 +202,36 @@ const Select = forwardRef(
               ${activeVariant.background}
               ${activeVariant.border}
               ${activeVariant.text}
-              resize-none
-              ${disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}
+              ${activeVariant.placeholder}
+              ${activeVariant.focusRing}
+              ${activeVariant.focusBorder}
+              ${disabled ? 'cursor-not-allowed opacity-60' : ''}
               ${readOnly ? 'cursor-default' : ''}
               ${className}
             `}
             {...rest}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            disabled={disabled || readOnly}
+            style={{
+              position: 'absolute',
+              top: '15.88px',
+              left: '331.99px',
+              background: 'none',
+              border: 'none',
+              padding: '0',
+              cursor: disabled || readOnly ? 'not-allowed' : 'pointer',
+              opacity: disabled || readOnly ? 0.5 : 1,
+            }}
           >
-            {placeholder && (
-              <option value="" disabled>
-                {placeholder}
-              </option>
-            )}
-            {options.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-
-          {/* Dropdown Icon - Polygon from Figma */}
-          <div className="absolute top-[16.98px] left-[334.5px] pointer-events-none w-[10px] h-[7px]">
-            <DropdownIcon disabled={disabled} />
-          </div>
+            <EyeIcon showPassword={showPassword} disabled={disabled || readOnly} />
+          </button>
         </div>
-
-        {error && <p className={`text-xs text-red-600 ${errorClassName}`}>{error}</p>}
+        {error && (
+          <p className={`text-xs text-red-600 ${errorClassName}`}>{error}</p>
+        )}
         {helpText && !error && (
           <p className={`text-xs text-gray-600 ${helpTextClassName}`}>{helpText}</p>
         )}
@@ -214,6 +240,6 @@ const Select = forwardRef(
   }
 );
 
-Select.displayName = 'Select';
+PasswordInput.displayName = 'PasswordInput';
 
-export default Select;
+export default PasswordInput;

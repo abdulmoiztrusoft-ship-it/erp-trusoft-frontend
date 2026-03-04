@@ -1,5 +1,26 @@
 import React, { forwardRef } from 'react';
 
+/**
+ * URLInput Component
+ * A reusable URL input component with support for variants, labels, errors, and custom styling
+ * Specifically designed for URL input fields
+ * 
+ * Variants:
+ * - inactive: Background #B4E2DF66, Border #045F5866
+ * - active: Active state styling
+ * - focus: Focus state styling
+ * - error: Error state styling
+ * - disabled: Disabled state styling
+ * - readonly: Readonly state styling
+ * - variant7: Custom variant 7
+ * - variant8: Custom variant 8
+ * - variant9: Custom variant 9
+ */
+
+/**
+ * URL Icon - Vector from Figma
+ * Width: 10px, Height: 10px, Color: #333333
+ */
 const URLIcon = ({ disabled }) => (
   <svg
     width="10"

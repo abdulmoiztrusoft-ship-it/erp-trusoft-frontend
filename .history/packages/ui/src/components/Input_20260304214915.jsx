@@ -1,21 +1,22 @@
 import React, { forwardRef } from 'react';
 
-const textareaVariants = {
+
+const inputVariants = {
   inactive: {
     background: 'bg-[#B4E2DF66]',
     border: 'border-[#045F5866]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
   active: {
     background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
+    border: 'border-[var(--color-teal-10)]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
   error: {
     background: 'bg-[#FFF5F580]',
@@ -30,8 +31,8 @@ const textareaVariants = {
     border: 'border-[#33333366]',
     text: 'text-gray-500',
     placeholder: 'placeholder-gray-400',
-    focusRing: 'focus:ring-[#333333]',
-    focusBorder: 'focus:border-[#333333]',
+    focusRing: 'focus:ring-[var(--color-neutral-8)]',
+    focusBorder: 'focus:border-[var(--color-neutral-8)]',
   },
   readonly: {
     background: 'bg-[#B4E2DF99]',
@@ -41,15 +42,7 @@ const textareaVariants = {
     focusRing: 'focus:ring-[#A3A9A9]',
     focusBorder: 'focus:border-[#A3A9A9]',
   },
-  helper: {
-    background: 'bg-[#B4E2DF99]',
-    border: 'border-[#A3A9A9]',
-    text: 'text-gray-800',
-    placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#A3A9A9]',
-    focusBorder: 'focus:border-[#A3A9A9]',
-  },
-  variant7: {
+  'error-text': {
     background: 'bg-[#FFF5F580]',
     border: 'border-[#DD3838]',
     text: 'text-gray-800',
@@ -57,25 +50,33 @@ const textareaVariants = {
     focusRing: 'focus:ring-[#DD3838]',
     focusBorder: 'focus:border-[#DD3838]',
   },
-  variant8: {
+  helper: {
     background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
+    border: 'border-[var(--color-teal-10)]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
-  variant9: {
+  required: {
     background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
+    border: 'border-[var(--color-teal-10)]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
+  },
+  linear: {
+    background: 'bg-[#B4E2DF66]',
+    border: 'border-[var(--color-teal-10)]',
+    text: 'text-gray-800',
+    placeholder: 'placeholder-gray-600',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
 };
 
-const Textarea = forwardRef(
+const Input = forwardRef(
   (
     {
       label,
@@ -90,8 +91,8 @@ const Textarea = forwardRef(
       error,
       helpText,
       variant = 'inactive',
-      maxLength,
       required = false,
+      type = 'text',
       className = '',
       containerClassName = '',
       labelClassName = '',
@@ -102,13 +103,13 @@ const Textarea = forwardRef(
     },
     ref
   ) => {
-    const variantStyles = textareaVariants[variant] || textareaVariants.inactive;
-    
+    const variantStyles = inputVariants[variant] || inputVariants.inactive;
+
     // Determine actual variant to use based on state
     const getActiveVariant = () => {
-      if (disabled) return textareaVariants.disabled;
-      if (readOnly) return textareaVariants.readonly;
-      if (error) return textareaVariants.error;
+      if (disabled) return inputVariants.disabled;
+      if (readOnly) return inputVariants.readonly;
+      if (error) return inputVariants.error;
       return variantStyles;
     };
 
@@ -126,10 +127,11 @@ const Textarea = forwardRef(
             {label}
           </label>
         )}
-        <textarea
+        <input
           ref={ref}
           id={name}
           name={name}
+          type={type}
           value={value}
           onChange={onChange}
           onBlur={onBlur}
@@ -137,10 +139,9 @@ const Textarea = forwardRef(
           placeholder={placeholder}
           disabled={disabled}
           readOnly={readOnly}
-          maxLength={maxLength}
           style={{
             width: '360px',
-            height: '100px',
+            height: '40px',
             borderRadius: '6px',
             ...style,
           }}
@@ -157,31 +158,12 @@ const Textarea = forwardRef(
             ${activeVariant.placeholder}
             ${activeVariant.focusRing}
             ${activeVariant.focusBorder}
-            resize-none
             ${disabled ? 'cursor-not-allowed opacity-60' : ''}
             ${readOnly ? 'cursor-default' : ''}
             ${className}
           `}
           {...rest}
         />
-        {maxLength && (
-          <div className="text-xs text-gray-500" style={{
-            fontFamily: 'Poppins',
-            fontWeight: '300',
-            fontSize: '8px',
-            lineHeight: '22px',
-            letterSpacing: '0%',
-            color: '#333333',
-            border: '1px solid #D2EEEC66',
-            borderRadius: '4px',
-            padding: '2px 6px',
-            width: 'fit-content',
-            marginTop: '-30px',
-            marginLeft: '317px',
-          }}>
-            {value?.length || 0} / {maxLength}
-          </div>
-        )}
         {error && (
           <p className={`text-xs text-red-600 ${errorClassName}`}>{error}</p>
         )}
@@ -193,6 +175,6 @@ const Textarea = forwardRef(
   }
 );
 
-Textarea.displayName = 'Textarea';
+Input.displayName = 'Input';
 
-export default Textarea;
+export default Input;

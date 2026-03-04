@@ -1,0 +1,33 @@
+:root {
+  /* Teal Scale (Primary colors) */
+  --color-teal-1: #B4E2DF;
+  --color-teal-2: #91E2D9;
+  --color-teal-3: #64E2D4;
+  --color-teal-4: #51CBC1;
+  --color-teal-5: #3EB5AF;
+  --color-teal-6: #27A39E;
+  --color-teal-7: #00918E;
+  --color-teal-8: #02807C;
+  --color-teal-9: #036F6A;
+  --color-teal-10: #045F58;
+
+  /* Neutral Scale */
+  --color-neutral-1: #FFFFFF;
+  --color-neutral-2: #F6F6F6;
+  --color-neutral-3: #EDEDED;
+  --color-neutral-4: #D8D8D8;
+  --color-neutral-5: #C3C3C3;
+  --color-neutral-6: #AFAFAF;
+  --color-neutral-7: #6E6E6E;
+  --color-neutral-8: #333333;
+  --color-neutral-9: #0D0D0D;
+  --color-neutral-10: #000000;
+
+  /* Semantic Colors */
+  --color-status-review: #FF9800;
+  --color-status-draft: #757575;
+  --color-priority-high: #F44336;
+  --color-priority-medium: #FF9800;
+  --color-priority-low: #4CAF50;
+}
+

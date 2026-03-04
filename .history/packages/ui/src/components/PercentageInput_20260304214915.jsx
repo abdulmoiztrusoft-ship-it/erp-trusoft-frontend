@@ -1,22 +1,22 @@
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef } from 'react';
 
 
-const copyVariants = {
+const percentageVariants = {
   inactive: {
     background: 'bg-[#B4E2DF66]',
     border: 'border-[#045F5866]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
   active: {
     background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
+    border: 'border-[var(--color-teal-10)]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
   error: {
     background: 'bg-[#FFF5F580]',
@@ -31,8 +31,8 @@ const copyVariants = {
     border: 'border-[#33333366]',
     text: 'text-gray-500',
     placeholder: 'placeholder-gray-400',
-    focusRing: 'focus:ring-[#333333]',
-    focusBorder: 'focus:border-[#333333]',
+    focusRing: 'focus:ring-[var(--color-neutral-8)]',
+    focusBorder: 'focus:border-[var(--color-neutral-8)]',
   },
   readonly: {
     background: 'bg-[#B4E2DF99]',
@@ -41,14 +41,6 @@ const copyVariants = {
     placeholder: 'placeholder-gray-600',
     focusRing: 'focus:ring-[#A3A9A9]',
     focusBorder: 'focus:border-[#A3A9A9]',
-  },
-  copied: {
-    background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
-    text: 'text-gray-800',
-    placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
   },
   'error-text': {
     background: 'bg-[#FFF5F580]',
@@ -60,70 +52,49 @@ const copyVariants = {
   },
   helper: {
     background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
+    border: 'border-[var(--color-teal-10)]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
   required: {
     background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
+    border: 'border-[var(--color-teal-10)]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
   linear: {
     background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
+    border: 'border-[var(--color-teal-10)]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
 };
 
-// Copy icon SVG component
-const CopyIcon = ({ disabled }) => (
+// Percentage icon SVG component
+const PercentageIcon = ({ disabled }) => (
   <svg
     width="10"
     height="10"
-    viewBox="0 0 16 16"
+    viewBox="0 0 10 10"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     style={{
       opacity: disabled ? 0.5 : 1,
     }}
   >
-    <rect
-      x="0"
-      y="0"
-      width="16"
-      height="16"
-      rx="2"
-      fill={disabled ? '#999999' : '#333333'}
-    />
-    <path
-      d="M4 2.5H1.5V14H9.5V11.5M4 2.5V6.5H9.5V14M4 2.5H9.5"
-      stroke="white"
-      strokeWidth="1"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      fill="none"
-    />
-    <path
-      d="M5.5 6.5H12V13.5H5.5V6.5Z"
-      stroke="white"
-      strokeWidth="1"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      fill="none"
-    />
+    <path d="M1.63305 0.0390248C0.787941 0.262182 0.15411 0.955142 0.0191279 1.8047C-0.0199974 2.04744 0.00347781 2.51137 0.0660783 2.73844C0.257792 3.4314 0.766422 3.9795 1.43938 4.22028C2.54271 4.6157 3.7732 4.06759 4.20554 2.98704C4.30922 2.72669 4.34443 2.55835 4.35617 2.25102C4.36791 1.92999 4.34052 1.72053 4.25249 1.45822C4.02556 0.775051 3.45042 0.232819 2.7579 0.0488124C2.58771 0.00378942 2.54076 -0.000125408 2.17102 0.00183201C1.84628 0.00183201 1.74455 0.00966215 1.63305 0.0390248ZM2.39404 1.58546C2.53489 1.63832 2.66596 1.75772 2.73247 1.89475C2.80681 2.04744 2.81072 2.27059 2.73834 2.41741C2.67769 2.54269 2.55836 2.66014 2.43512 2.72278C2.2884 2.79325 2.06538 2.79129 1.91279 2.71495C1.54502 2.53486 1.45112 2.06114 1.72304 1.75381C1.88932 1.56393 2.15537 1.49737 2.39404 1.58546Z" fill={disabled ? '#999999' : 'var(--color-neutral-8)'}/>
+    <path d="M8.74194 0.0371923C8.69304 0.0567675 8.61283 0.0998335 8.56588 0.133111C8.51893 0.166389 6.60374 2.07105 4.311 4.36918C0.682125 8.00428 0.136327 8.55826 0.0913326 8.65418C0.013082 8.82057 -0.00648068 8.92627 0.00330065 9.13769C0.00916945 9.30799 0.0169945 9.34322 0.0815513 9.48025C0.179365 9.68187 0.320216 9.82282 0.521711 9.92069C0.662562 9.98725 0.68995 9.99312 0.879708 9.99899C1.11055 10.0068 1.26314 9.96963 1.42746 9.86588C1.47637 9.83456 3.39547 7.92598 5.69408 5.62394C9.44424 1.86747 9.87853 1.42703 9.9294 1.32132C9.98222 1.2117 9.98613 1.1843 9.992 0.923947L9.99982 0.642065L9.9294 0.497209C9.83941 0.305372 9.69269 0.158559 9.50293 0.0685129C9.36208 0 9.36012 0 9.09603 0C8.89062 0.00195694 8.81237 0.00978756 8.74194 0.0371923Z" fill={disabled ? '#999999' : 'var(--color-neutral-8)'}/>
+    <path d="M7.52074 5.65139C7.39749 5.66901 7.15296 5.73752 7.01015 5.79429C6.36654 6.05073 5.89313 6.59883 5.70924 7.29766C5.65251 7.51103 5.63685 7.95343 5.67989 8.19616C5.82661 9.03594 6.43697 9.70737 7.27034 9.94031C7.44836 9.98925 7.48944 9.99316 7.83374 9.99316C8.18 9.99316 8.21913 9.98925 8.40106 9.93835C9.15813 9.7289 9.74697 9.14164 9.94651 8.39583C9.9915 8.22748 9.99542 8.17659 9.99542 7.82032C9.99542 7.46405 9.9915 7.41316 9.94651 7.24481C9.79588 6.68105 9.41245 6.19363 8.89013 5.90196C8.71797 5.80408 8.42649 5.70229 8.22108 5.66705C8.06654 5.63965 7.66746 5.63182 7.52074 5.65139ZM8.10566 7.27026C8.41084 7.41903 8.53995 7.81053 8.3815 8.1022C8.18587 8.46239 7.73006 8.54656 7.42684 8.27838C7.26251 8.13548 7.18426 7.88688 7.23512 7.67938C7.28403 7.48167 7.4601 7.29375 7.65572 7.23111C7.77897 7.19 7.97655 7.20762 8.10566 7.27026Z" fill={disabled ? '#999999' : 'var(--color-neutral-8)'}/>
   </svg>
 );
 
-const CopyInput = forwardRef(
+const PercentageInput = forwardRef(
   (
     {
       label,
@@ -145,35 +116,21 @@ const CopyInput = forwardRef(
       errorClassName = '',
       helpTextClassName = '',
       style = {},
-      onCopy,
       ...rest
     },
     ref
   ) => {
-    const [isCopied, setIsCopied] = useState(false);
-
-    const variantStyles = copyVariants[variant] || copyVariants.inactive;
+    const variantStyles = percentageVariants[variant] || percentageVariants.inactive;
 
     // Determine actual variant to use based on state
     const getActiveVariant = () => {
-      if (disabled) return copyVariants.disabled;
-      if (readOnly) return copyVariants.readonly;
-      if (isCopied) return copyVariants.copied;
-      if (error) return copyVariants.error;
+      if (disabled) return percentageVariants.disabled;
+      if (readOnly) return percentageVariants.readonly;
+      if (error) return percentageVariants.error;
       return variantStyles;
     };
 
     const activeVariant = getActiveVariant();
-
-    const handleCopy = () => {
-      if (value) {
-        navigator.clipboard.writeText(value).then(() => {
-          setIsCopied(true);
-          setTimeout(() => setIsCopied(false), 2000);
-          onCopy?.();
-        });
-      }
-    };
 
     return (
       <div className={`flex flex-col gap-2 ${containerClassName}`}>
@@ -192,7 +149,7 @@ const CopyInput = forwardRef(
             ref={ref}
             id={name}
             name={name}
-            type="text"
+            type="number"
             value={value}
             onChange={onChange}
             onBlur={onBlur}
@@ -200,6 +157,8 @@ const CopyInput = forwardRef(
             placeholder={placeholder}
             disabled={disabled}
             readOnly={readOnly}
+            min="0"
+            max="100"
             style={{
               width: '360px',
               height: '40px',
@@ -226,26 +185,19 @@ const CopyInput = forwardRef(
             `}
             {...rest}
           />
-          <button
-            type="button"
-            onClick={handleCopy}
-            disabled={disabled || readOnly || !value}
+          <div
             style={{
               position: 'absolute',
-              top: '17.07px',
-              left: '338.41px',
-              background: 'none',
-              border: 'none',
-              padding: '0',
-              cursor: disabled || readOnly || !value ? 'not-allowed' : 'pointer',
-              opacity: disabled || readOnly ? 0.5 : 1,
+              top: '15px',
+              left: '338px',
+              pointerEvents: 'none',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <CopyIcon disabled={disabled || readOnly} />
-          </button>
+            <PercentageIcon disabled={disabled || readOnly} />
+          </div>
         </div>
         {error && (
           <p className={`text-xs text-red-600 ${errorClassName}`}>{error}</p>
@@ -258,6 +210,6 @@ const CopyInput = forwardRef(
   }
 );
 
-CopyInput.displayName = 'CopyInput';
+PercentageInput.displayName = 'PercentageInput';
 
-export default CopyInput;
+export default PercentageInput;

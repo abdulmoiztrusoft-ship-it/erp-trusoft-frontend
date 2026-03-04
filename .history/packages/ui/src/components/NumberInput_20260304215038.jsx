@@ -1,5 +1,21 @@
 import React, { forwardRef } from 'react';
 
+/**
+ * NumberInput Component
+ * A reusable number input component with spinner controls (up/down arrows)
+ * 
+ * Variants:
+ * - inactive: Background #B4E2DF66, Border #045F5866
+ * - active: Background #B4E2DF66, Border #045F58
+ * - disabled: Disabled state styling
+ * - readonly: Readonly state styling
+ * - error: Error state styling
+ * - error-text: Error state with text
+ * - helper: Helper text styling
+ * - required: Required field styling
+ * - linear: Linear input styling
+ */
+
 const inputVariants = {
   inactive: {
     background: 'bg-[#B4E2DF66]',

@@ -1,22 +1,23 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState } from 'react';
 
-const DropdownIcon = ({ disabled }) => (
-  <svg
-    width="10"
-    height="7"
-    viewBox="0 0 10 7"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    style={{ transform: 'rotate(180deg)' }}
-  >
-    <polygon
-      points="0,7 5,0 10,7"
-      fill={disabled ? '#999999' : '#000000'}
-    />
-  </svg>
-);
+/**
+ * CopyInput Component
+ * A reusable text input component with copy icon functionality
+ * 
+ * Variants:
+ * - inactive: Background #B4E2DF66, Border #045F5866
+ * - active: Background #B4E2DF66, Border #045F58
+ * - error: Error state styling
+ * - disabled: Disabled state styling
+ * - readonly: Readonly state styling
+ * - copied: Copied state styling
+ * - error-text: Error state with text
+ * - helper: Helper text styling
+ * - required: Required field styling
+ * - linear: Linear input styling
+ */
 
-const selectVariants = {
+const copyVariants = {
   inactive: {
     background: 'bg-[#B4E2DF66]',
     border: 'border-[#045F5866]',
@@ -26,14 +27,6 @@ const selectVariants = {
     focusBorder: 'focus:border-[#045F58]',
   },
   active: {
-    background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
-    text: 'text-gray-800',
-    placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
-  },
-  focus: {
     background: 'bg-[#B4E2DF66]',
     border: 'border-[#045F58]',
     text: 'text-gray-800',
@@ -65,7 +58,7 @@ const selectVariants = {
     focusRing: 'focus:ring-[#A3A9A9]',
     focusBorder: 'focus:border-[#A3A9A9]',
   },
-  variant7: {
+  copied: {
     background: 'bg-[#B4E2DF66]',
     border: 'border-[#045F58]',
     text: 'text-gray-800',
@@ -73,7 +66,7 @@ const selectVariants = {
     focusRing: 'focus:ring-[#045F58]',
     focusBorder: 'focus:border-[#045F58]',
   },
-  variant8: {
+  'error-text': {
     background: 'bg-[#FFF5F580]',
     border: 'border-[#DD3838]',
     text: 'text-gray-800',
@@ -81,7 +74,7 @@ const selectVariants = {
     focusRing: 'focus:ring-[#DD3838]',
     focusBorder: 'focus:border-[#DD3838]',
   },
-  variant9: {
+  helper: {
     background: 'bg-[#B4E2DF66]',
     border: 'border-[#045F58]',
     text: 'text-gray-800',
@@ -89,7 +82,15 @@ const selectVariants = {
     focusRing: 'focus:ring-[#045F58]',
     focusBorder: 'focus:border-[#045F58]',
   },
-  variant10: {
+  required: {
+    background: 'bg-[#B4E2DF66]',
+    border: 'border-[#045F58]',
+    text: 'text-gray-800',
+    placeholder: 'placeholder-gray-600',
+    focusRing: 'focus:ring-[#045F58]',
+    focusBorder: 'focus:border-[#045F58]',
+  },
+  linear: {
     background: 'bg-[#B4E2DF66]',
     border: 'border-[#045F58]',
     text: 'text-gray-800',
@@ -99,7 +100,46 @@ const selectVariants = {
   },
 };
 
-const Select = forwardRef(
+// Copy icon SVG component
+const CopyIcon = ({ disabled }) => (
+  <svg
+    width="10"
+    height="10"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    style={{
+      opacity: disabled ? 0.5 : 1,
+    }}
+  >
+    <rect
+      x="0"
+      y="0"
+      width="16"
+      height="16"
+      rx="2"
+      fill={disabled ? '#999999' : '#333333'}
+    />
+    <path
+      d="M4 2.5H1.5V14H9.5V11.5M4 2.5V6.5H9.5V14M4 2.5H9.5"
+      stroke="white"
+      strokeWidth="1"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+    <path
+      d="M5.5 6.5H12V13.5H5.5V6.5Z"
+      stroke="white"
+      strokeWidth="1"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+  </svg>
+);
+
+const CopyInput = forwardRef(
   (
     {
       label,
@@ -109,7 +149,6 @@ const Select = forwardRef(
       onBlur,
       onFocus,
       placeholder,
-      options = [],
       disabled = false,
       readOnly = false,
       error,
@@ -122,21 +161,35 @@ const Select = forwardRef(
       errorClassName = '',
       helpTextClassName = '',
       style = {},
+      onCopy,
       ...rest
     },
     ref
   ) => {
-    const variantStyles = selectVariants[variant] || selectVariants.inactive;
+    const [isCopied, setIsCopied] = useState(false);
+
+    const variantStyles = copyVariants[variant] || copyVariants.inactive;
 
     // Determine actual variant to use based on state
     const getActiveVariant = () => {
-      if (disabled) return selectVariants.disabled;
-      if (readOnly) return selectVariants.readonly;
-      if (error) return selectVariants.error;
+      if (disabled) return copyVariants.disabled;
+      if (readOnly) return copyVariants.readonly;
+      if (isCopied) return copyVariants.copied;
+      if (error) return copyVariants.error;
       return variantStyles;
     };
 
     const activeVariant = getActiveVariant();
+
+    const handleCopy = () => {
+      if (value) {
+        navigator.clipboard.writeText(value).then(() => {
+          setIsCopied(true);
+          setTimeout(() => setIsCopied(false), 2000);
+          onCopy?.();
+        });
+      }
+    };
 
     return (
       <div className={`flex flex-col gap-2 ${containerClassName}`}>
@@ -151,27 +204,27 @@ const Select = forwardRef(
           </label>
         )}
         <div className="relative inline-block">
-          <select
+          <input
             ref={ref}
             id={name}
             name={name}
+            type="text"
             value={value}
             onChange={onChange}
             onBlur={onBlur}
             onFocus={onFocus}
+            placeholder={placeholder}
             disabled={disabled}
+            readOnly={readOnly}
             style={{
-              width: '359px',
+              width: '360px',
               height: '40px',
               borderRadius: '6px',
-              appearance: 'none',
-              paddingRight: '40px',
-              paddingLeft: '12px',
-              backgroundImage: 'none',
+              paddingRight: '50px',
               ...style,
             }}
             className={`
-              py-2
+              px-3 py-2 
               border border-[1px]
               text-sm
               font-normal
@@ -180,32 +233,39 @@ const Select = forwardRef(
               ${activeVariant.background}
               ${activeVariant.border}
               ${activeVariant.text}
-              resize-none
-              ${disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}
+              ${activeVariant.placeholder}
+              ${activeVariant.focusRing}
+              ${activeVariant.focusBorder}
+              ${disabled ? 'cursor-not-allowed opacity-60' : ''}
               ${readOnly ? 'cursor-default' : ''}
               ${className}
             `}
             {...rest}
+          />
+          <button
+            type="button"
+            onClick={handleCopy}
+            disabled={disabled || readOnly || !value}
+            style={{
+              position: 'absolute',
+              top: '17.07px',
+              left: '338.41px',
+              background: 'none',
+              border: 'none',
+              padding: '0',
+              cursor: disabled || readOnly || !value ? 'not-allowed' : 'pointer',
+              opacity: disabled || readOnly ? 0.5 : 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
           >
-            {placeholder && (
-              <option value="" disabled>
-                {placeholder}
-              </option>
-            )}
-            {options.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-
-          {/* Dropdown Icon - Polygon from Figma */}
-          <div className="absolute top-[16.98px] left-[334.5px] pointer-events-none w-[10px] h-[7px]">
-            <DropdownIcon disabled={disabled} />
-          </div>
+            <CopyIcon disabled={disabled || readOnly} />
+          </button>
         </div>
-
-        {error && <p className={`text-xs text-red-600 ${errorClassName}`}>{error}</p>}
+        {error && (
+          <p className={`text-xs text-red-600 ${errorClassName}`}>{error}</p>
+        )}
         {helpText && !error && (
           <p className={`text-xs text-gray-600 ${helpTextClassName}`}>{helpText}</p>
         )}
@@ -214,6 +274,6 @@ const Select = forwardRef(
   }
 );
 
-Select.displayName = 'Select';
+CopyInput.displayName = 'CopyInput';
 
-export default Select;
+export default CopyInput;
