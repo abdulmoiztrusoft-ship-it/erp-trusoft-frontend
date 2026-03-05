@@ -176,7 +176,7 @@ export const AVAILABLE_WIDGETS = {
     title: 'Hiring Overview',
     description: 'View recruitment funnel and hiring progress',
     icon: <Briefcase size={ICON_SIZE} color={ICON_COLOR} />,
-    defaultLayout: { w: 6, h: 3.5, minW: 5, maxW: 6, minH: 3.5, maxH: 3.5 },
+    defaultLayout: { w: 4, h: 3.5, minW: 4, maxW: 4, minH: 3.5, maxH: 3.5 },
     removable: true,
   },
   diversityMix: {

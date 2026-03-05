@@ -53,7 +53,7 @@ export default function FilterButton({ label }) {
       {isOpen && (
         <div 
           className="absolute left-1/2 -translate-x-1/2 mt-2 sm:mt-3 w-72 sm:w-80 lg:w-[290px] rounded-lg sm:rounded-xl lg:rounded-[24px] shadow-lg z-50 flex flex-col p-3 sm:p-4 lg:p-5 gap-3 sm:gap-3 lg:gap-4 overflow-hidden max-h-[70vh] sm:max-h-[60vh] lg:max-h-[65vh]"
-          style={{ backgroundColor: '#EDEDED' }}
+          style={{ backgroundColor: 'var(--color-neutral-3)' }}
         >
           {/* Scrollable inner content */}
           <div 

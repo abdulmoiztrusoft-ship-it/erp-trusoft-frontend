@@ -460,7 +460,7 @@ export const Sidebar = () => {
       >
         <div className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide pt-4">
           <nav className="flex flex-col h-full relative">
-            <div className="py-2 max-h-[60%] overflow-y-auto">
+            <div className="py-2 max-h-[70%] overflow-y-auto">
               <div className="pt-2">
                 <MenuItem
                   icon={LayoutDashboard}
@@ -512,7 +512,7 @@ export const Sidebar = () => {
       {/* Sidebar Toggle Button (Green Chevron) - Visible on ALL screen sizes */}
       <button
         onClick={toggleCollapse}
-        className="flex absolute items-center justify-center bg-[var(--color-primary-darkest)] text-white hover:opacity-90 transition-opacity z-50 w-6 h-9 top-2.5 -right-5 rounded-r-full border border-white/20 border-l-0"
+        className="flex absolute items-center justify-center bg-[var(--color-primary-darkest)] text-white hover:opacity-90 transition-opacity z-50 w-6 h-9 top-2 -right-5 rounded-r-full border border-white/20 border-l-0"
         title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
       >

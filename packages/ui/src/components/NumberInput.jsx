@@ -6,24 +6,24 @@ const inputVariants = {
     border: 'border-[#045F5866]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
   active: {
     background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
+    border: 'border-[var(--color-teal-10)]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
   disabled: {
     background: 'bg-[#D2EEEC66]',
     border: 'border-[#33333366]',
     text: 'text-gray-500',
     placeholder: 'placeholder-gray-400',
-    focusRing: 'focus:ring-[#333333]',
-    focusBorder: 'focus:border-[#333333]',
+    focusRing: 'focus:ring-[var(--color-neutral-8)]',
+    focusBorder: 'focus:border-[var(--color-neutral-8)]',
   },
   readonly: {
     background: 'bg-[#B4E2DF99]',
@@ -51,27 +51,27 @@ const inputVariants = {
   },
   helper: {
     background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
+    border: 'border-[var(--color-teal-10)]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
   required: {
     background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
+    border: 'border-[var(--color-teal-10)]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
   linear: {
     background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
+    border: 'border-[var(--color-teal-10)]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
 };
 
@@ -105,7 +105,6 @@ const NumberInput = forwardRef(
   ) => {
     const variantStyles = inputVariants[variant] || inputVariants.inactive;
 
-    // Determine actual variant to use based on state
     const getActiveVariant = () => {
       if (disabled) return inputVariants.disabled;
       if (readOnly) return inputVariants.readonly;
@@ -121,7 +120,7 @@ const NumberInput = forwardRef(
         const stepValue = parseFloat(step) || 1;
         const maxValue = max ? parseFloat(max) : undefined;
         const newValue = currentValue + stepValue;
-        
+
         if (maxValue === undefined || newValue <= maxValue) {
           onChange({ target: { value: newValue.toString() } });
         }
@@ -134,7 +133,7 @@ const NumberInput = forwardRef(
         const stepValue = parseFloat(step) || 1;
         const minValue = min ? parseFloat(min) : undefined;
         const newValue = currentValue - stepValue;
-        
+
         if (minValue === undefined || newValue >= minValue) {
           onChange({ target: { value: newValue.toString() } });
         }
@@ -143,7 +142,7 @@ const NumberInput = forwardRef(
 
     return (
       <div className={`flex flex-col gap-2 ${containerClassName}`}>
-        <div className="relative">
+        <div className="relative w-fit">
           <input
             ref={ref}
             id={name}
@@ -188,8 +187,8 @@ const NumberInput = forwardRef(
             {...rest}
           />
 
-          {/* Custom Spinner Controls */}
-          <div className="absolute right-6 top-1/2 transform -translate-y-1/2 flex flex-col gap-1">
+          {/* Custom Spinner Controls — right-3 now correctly sits inside the input */}
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-1">
             {/* Up Arrow */}
             <button
               type="button"
@@ -209,7 +208,7 @@ const NumberInput = forwardRef(
               >
                 <polygon
                   points="0,7 5,0 10,7"
-                  fill={disabled || readOnly ? '#999999' : '#000000'}
+                  fill={disabled || readOnly ? '#999999' : 'var(--color-neutral-10)'}
                 />
               </svg>
             </button>
@@ -234,7 +233,7 @@ const NumberInput = forwardRef(
               >
                 <polygon
                   points="0,7 5,0 10,7"
-                  fill={disabled || readOnly ? '#999999' : '#000000'}
+                  fill={disabled || readOnly ? '#999999' : 'var(--color-neutral-10)'}
                 />
               </svg>
             </button>

@@ -11,7 +11,7 @@ const DropdownIcon = ({ disabled }) => (
   >
     <polygon
       points="0,7 5,0 10,7"
-      fill={disabled ? '#999999' : '#000000'}
+      fill={disabled ? '#999999' : 'var(--color-neutral-10)'}
     />
   </svg>
 );
@@ -22,24 +22,24 @@ const selectVariants = {
     border: 'border-[#045F5866]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
   active: {
     background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
+    border: 'border-[var(--color-teal-10)]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
   focus: {
     background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
+    border: 'border-[var(--color-teal-10)]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
   error: {
     background: 'bg-[#FFF5F580]',
@@ -54,8 +54,8 @@ const selectVariants = {
     border: 'border-[#33333366]',
     text: 'text-gray-500',
     placeholder: 'placeholder-gray-400',
-    focusRing: 'focus:ring-[#333333]',
-    focusBorder: 'focus:border-[#333333]',
+    focusRing: 'focus:ring-[var(--color-neutral-8)]',
+    focusBorder: 'focus:border-[var(--color-neutral-8)]',
   },
   readonly: {
     background: 'bg-[#B4E2DF99]',
@@ -67,11 +67,11 @@ const selectVariants = {
   },
   variant7: {
     background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
+    border: 'border-[var(--color-teal-10)]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
   variant8: {
     background: 'bg-[#FFF5F580]',
@@ -83,19 +83,19 @@ const selectVariants = {
   },
   variant9: {
     background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
+    border: 'border-[var(--color-teal-10)]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
   variant10: {
     background: 'bg-[#B4E2DF66]',
-    border: 'border-[#045F58]',
+    border: 'border-[var(--color-teal-10)]',
     text: 'text-gray-800',
     placeholder: 'placeholder-gray-600',
-    focusRing: 'focus:ring-[#045F58]',
-    focusBorder: 'focus:border-[#045F58]',
+    focusRing: 'focus:ring-[var(--color-teal-10)]',
+    focusBorder: 'focus:border-[var(--color-teal-10)]',
   },
 };
 
