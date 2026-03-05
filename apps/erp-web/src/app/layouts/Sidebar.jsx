@@ -68,7 +68,7 @@ const hrMenuData = [
     parentId: 'employee-mgmt',
     isLastChild: true
   },
-  {
+    {
     id: 'recruitment',
     label: 'Recruitment',
     path: '/hr/candidate-pipeline',
