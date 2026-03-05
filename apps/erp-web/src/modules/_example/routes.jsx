@@ -6,4 +6,8 @@ export const jobRequisitionsRoutes = [
     path: '/recruitment/job-requisitions',
     element: <ExampleScreen />,
   },
+   {
+    path: '/recruitment/job-requisitions',
+    element: <ExampleScreen />,
+  },
 ];
